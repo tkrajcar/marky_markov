@@ -97,18 +97,20 @@ class MarkovSentenceGenerator # :nodoc:
   #
   # @param [Int] sentencecount The number of sentences you want the generated string to contain.
   # @return [String] the sentence(s) generated.
-  def generate_sentence(sentencecount)
+  def generate_sentence(sentencecount, keyphrase = random_capitalized_word())
     if @dictionary.dictionary.empty?
       raise EmptyDictionaryError.new("The dictionary is empty! Parse a source file/string!")
     end
     sentence = []
     # Find out how many actual keys are in the dictionary.
     key_count = @dictionary.dictionary.keys.length
+    keyphrase_array = @dictionary.dictionary.find_all { |x| x[0].include? keyphrase }.sample
     # If less than 30 keys, use that plus five as your maximum sentence length.
     maximum_length = key_count < 30 ? key_count + 5 : 30
     sentencecount.times do
       wordcount = 0
       sentence.concat(random_capitalized_word)
+      sentence.concat(keyphrase_array) unless keyphrase_array.nil?
       until (punctuation?(sentence.last[-1])) || wordcount > maximum_length
         wordcount += 1
         word = weighted_random(sentence.last(@depth))
@@ -120,5 +122,9 @@ class MarkovSentenceGenerator # :nodoc:
       end
     end
     sentence.join(' ')
+  end
+
+  def generate_sentence_with_phrase(phrase)
+    generate_sentence(1, phrase)
   end
 end

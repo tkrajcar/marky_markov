@@ -98,6 +98,10 @@ module MarkyMarkov
       end
     end
 
+    def generate_sentence_with_phrase(phrase)
+      @sentence.generate_sentence_with_phrase(phrase)
+    end
+
     # @since 0.1.4
     # Modify respond_to_missing? to include generate_n_words and generate_n_sentences
     # method_missing implementation.
